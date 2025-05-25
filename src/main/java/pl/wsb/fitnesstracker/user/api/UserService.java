@@ -6,6 +6,34 @@ package pl.wsb.fitnesstracker.user.api;
  */
 public interface UserService {
 
+    /**
+     * Creates a new user in the system.
+     * Implementations should validate that the user does not already have an assigned ID,
+     * then persist it in the database.
+     *
+     * @param user The user entity to create
+     * @return The persisted user including the assigned ID
+     * @throws IllegalArgumentException if the user already has an ID (indicating an update instead of create)
+     */
     User createUser(User user);
 
+    /**
+     * Deletes a user from the system based on their unique identifier.
+     * Implementations should handle the case where the user with the given ID does not exist.
+     *
+     * @param id The ID of the user to delete
+     */
+    void removeUser(Long id);
+
+    /**
+     * Updates an existing user's information.
+     * This method should update all relevant fields of the user
+     * and persist the changes.
+     * If a user with the given ID does not exist, implementations may throw an exception or handle it accordingly.
+     *
+     * @param id   The ID of the user to update
+     * @param user The user object containing updated data
+     * @return The updated and persisted user entity
+     */
+    User updateUser(Long id, User user);
 }
