@@ -1,22 +1,17 @@
 package pl.wsb.fitnesstracker.training.internal;
 
-// TODO : JavaDoc
+/**
+ * Enum representing different types of physical activities.
+ */
 public enum ActivityType {
 
     RUNNING("Running"),
     CYCLING("Cycling"),
     WALKING("Walking"),
     SWIMMING("Swimming"),
-    TENNIS("Tenis");
-
-    private final String displayName;
+    TENNIS("Tenis"),
+    TABLETENNIS("TABLETENNIS");
 
     ActivityType(String displayName) {
-        this.displayName = displayName;
     }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
 }

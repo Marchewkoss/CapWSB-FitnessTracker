@@ -6,7 +6,7 @@ import pl.wsb.fitnesstracker.user.api.UserByEmail;
 import pl.wsb.fitnesstracker.user.api.UserDto;
 
 @Component
-class UserMapper {
+public class UserMapper {
 
     /**
      * Converts a {@link User} entity to a full {@link UserDto}.
@@ -14,7 +14,7 @@ class UserMapper {
      * @param user the user entity to convert
      * @return a full user DTO containing all relevant fields
      */
-    UserDto toDto(User user) {
+    public UserDto toDto(User user) {
         return new UserDto(user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
