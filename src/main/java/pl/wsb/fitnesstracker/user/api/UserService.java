@@ -1,5 +1,7 @@
 package pl.wsb.fitnesstracker.user.api;
 
+import java.util.Optional;
+
 /**
  * Interface (API) for modifying operations on {@link User} entities through the API.
  * Implementing classes are responsible for executing changes within a database transaction, whether by continuing an existing transaction or creating a new one if required.
@@ -29,11 +31,11 @@ public interface UserService {
      * Updates an existing user's information.
      * This method should update all relevant fields of the user
      * and persist the changes.
-     * If a user with the given ID does not exist, implementations may throw an exception or handle it accordingly.
+     * If a user with the given ID does not exist, returns an empty Optional.
      *
      * @param id   The ID of the user to update
      * @param user The user object containing updated data
-     * @return The updated and persisted user entity
+     * @return Optional containing the updated and persisted user entity, or empty if user not found
      */
-    User updateUser(Long id, User user);
+    Optional<User> updateUser(Long id, User user);
 }

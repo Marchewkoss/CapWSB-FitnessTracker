@@ -32,6 +32,18 @@ public interface UserProvider {
     List<User> findAllUsers();
 
     /**
+     * Fetches a paginated list of users with optional sorting.
+     * This method provides more control over the result set size and order.
+     *
+     * @param page The page number to retrieve (0-based)
+     * @param size The number of users per page
+     * @param sortBy The field to sort by (e.g., "firstName", "lastName", "email", "birthdate")
+     * @param ascending Whether to sort in ascending (true) or descending (false) order
+     * @return A list containing the requested page of users
+     */
+    List<User> findAllUsersPaginated(int page, int size, String sortBy, boolean ascending);
+
+    /**
      * Searches for users whose email addresses contain the specified fragment.
      * Useful for partial matching and filtering user emails.
      *

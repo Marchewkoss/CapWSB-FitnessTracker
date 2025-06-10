@@ -8,7 +8,6 @@ import pl.wsb.fitnesstracker.training.api.TrainingNotFoundException;
 import pl.wsb.fitnesstracker.training.api.TrainingProvider;
 import pl.wsb.fitnesstracker.training.api.TrainingService;
 import pl.wsb.fitnesstracker.user.api.User;
-import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
 
 import java.util.Date;
@@ -77,9 +76,8 @@ class TrainingServiceImpl implements TrainingProvider, TrainingService {
         return trainingRepository.findAll();
     }
 
-    private User findUserOrThrow(Long userId) {
-        return userProvider.getUser(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+    private Optional<User> findUser(Long userId) {
+        return userProvider.getUser(userId);
     }
 
     private Training buildTrainingWithUser(Training source, User user) {
@@ -111,7 +109,8 @@ class TrainingServiceImpl implements TrainingProvider, TrainingService {
             throw new IllegalArgumentException("The training already has an ID in the database, creating a new training is not possible");
         }
 
-        User user = findUserOrThrow(userId);
+        User user = findUser(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " not found"));
         Training newTraining = buildTrainingWithUser(training, user);
 
         return trainingRepository.save(newTraining);
@@ -129,7 +128,7 @@ class TrainingServiceImpl implements TrainingProvider, TrainingService {
      * Updates an existing training identified by trainingId and assigns it to the user identified by userId.
      * <p>
      * Throws {@link TrainingNotFoundException} if no training with the given ID exists,
-     * or {@link UserNotFoundException} if no user with the given ID exists.
+     * or {@link IllegalArgumentException} if no user with the given ID exists.
      * </p>
      *
      * @param updatedTraining   the training object containing updated fields
@@ -137,14 +136,15 @@ class TrainingServiceImpl implements TrainingProvider, TrainingService {
      * @param userId     the ID of the user to assign the training to
      * @return the updated training object
      * @throws TrainingNotFoundException if the training does not exist
-     * @throws UserNotFoundException     if the user does not exist
+     * @throws IllegalArgumentException if the user does not exist
      */
     @Override
     public Training updateTraining(Training updatedTraining, Long trainingId, Long userId) {
         Training existingTraining = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new TrainingNotFoundException(trainingId));
 
-        User user = findUserOrThrow(userId);
+        User user = findUser(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " not found"));
 
         copyTrainingFields(existingTraining, updatedTraining);
         existingTraining.setUser(user);

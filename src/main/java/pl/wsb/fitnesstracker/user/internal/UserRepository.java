@@ -1,50 +1,42 @@
 package pl.wsb.fitnesstracker.user.internal;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import pl.wsb.fitnesstracker.user.api.User;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * Query searching users by email address. It matches by exact match.
+     * Finds a user by their exact email address.
+     * Uses Spring Data JPA's query method naming convention to generate the query.
      *
-     * @param email email of the user to search
-     * @return {@link Optional} containing found user or {@link Optional#empty()} if none matched
+     * @param email The exact email address to search for
+     * @return An {@link Optional} containing the user if found, or empty if not found
      */
-    default Optional<User> findByEmail(String email) {
-        return findAll().stream()
-                .filter(user -> Objects.equals(user.getEmail(), email))
-                .findFirst();
-    }
+    Optional<User> findByEmail(String email);
 
     /**
-     * Query searching users by email address. It matches by exact match.
+     * Searches for users whose email addresses contain the specified fragment (case-insensitive).
+     * Uses a custom JPQL query with the LOWER function for case-insensitive matching.
      *
-     * @param email email of the user to search
-     * @return List of users
+     * @param email The email fragment to search for
+     * @return A list of users whose emails contain the specified fragment
      */
-    default List<User> findUsersByEmail(String email) {
-        return findAll().stream()
-                .filter(user -> user.getEmail().toLowerCase().contains(email.toLowerCase()))
-                .collect(toList());
-    }
+    @Query("SELECT u FROM User u WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))")
+    List<User> findUsersByEmail(@Param("email") String email);
 
     /**
-     * Query searching users by BirthdateOlderThan given date.
+     * Finds users whose birthdate is before the specified date.
+     * Uses a custom JPQL query for more efficient database filtering.
      *
-     * @param time of the user birthday to search
-     * @return List of users
+     * @param date The date to compare birthdates against
+     * @return A list of users born before the specified date
      */
-    default List<User> findByBirthdateOlderThan(LocalDate time) {
-        return findAll().stream()
-                .filter(user -> user.getBirthdate().isBefore(time))
-                .collect(toList());
-    }
+    @Query("SELECT u FROM User u WHERE u.birthdate < :date")
+    List<User> findByBirthdateOlderThan(@Param("date") LocalDate date);
 }

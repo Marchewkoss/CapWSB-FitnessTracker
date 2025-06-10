@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "GetAllTrainings",
+			"name": "ShouldReturnAllTrainings",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -28,7 +28,7 @@
 			"response": []
 		},
 		{
-			"name": "getTrainingsByUserId",
+			"name": "ShouldGetTrainingForGivenUserId",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -49,7 +49,7 @@
 			"response": []
 		},
 		{
-			"name": "getTrainingsWithEndDateAfter",
+			"name": "ShouldGetTrainingWithEndDateAfterFilter",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -71,7 +71,7 @@
 			"response": []
 		},
 		{
-			"name": "Get trainings by activity type",
+			"name": "ShouldReturnAllTrainingsByActivityType",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -98,7 +98,7 @@
 			"response": []
 		},
 		{
-			"name": "Create User",
+			"name": "CreateTmpUser",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -127,7 +127,7 @@
 			"response": []
 		},
 		{
-			"name": "Create training for created user",
+			"name": "WantToCreateTrainingForCreatedUserWithActivityTypeRunning",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -156,7 +156,7 @@
 			"response": []
 		},
 		{
-			"name": "Update user by ID",
+			"name": "ShouldUpdateTrainingByID",
 			"request": {
 				"method": "PUT",
 				"header": [],

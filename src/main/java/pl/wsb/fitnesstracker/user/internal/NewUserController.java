@@ -8,27 +8,28 @@ import org.springframework.web.bind.annotation.*;
 import pl.wsb.fitnesstracker.user.api.User;
 import pl.wsb.fitnesstracker.user.api.UserByEmail;
 import pl.wsb.fitnesstracker.user.api.UserDto;
-import pl.wsb.fitnesstracker.user.api.UserService;
-import pl.wsb.fitnesstracker.user.api.UserProvider;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
 
-// @RestController - Disabled in favor of SimpleUserController
+/**
+ * REST controller for user operations.
+ * This controller provides endpoints for managing users.
+ */
+@RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
 @Slf4j
-class UserController {
+class NewUserController {
 
-    private final UserService userService;
-    private final UserProvider userProvider;
+    private final SimpleUserService userService;
     private final UserMapper userMapper;
 
     /**
      * Helper method to map a list of users to DTOs using the provided mapper function.
      *
-     * @param users       the list of users to map
+     * @param users         the list of users to map
      * @param mapperFunction the function to use for mapping each user
      * @return a list of mapped DTOs
      */
@@ -48,7 +49,7 @@ class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers() {
         log.debug("REST request to get all users");
         // Use the paginated method with default parameters (first page, 100 items, sorted by ID)
-        List<UserDto> users = mapUsersToDto(userProvider.findAllUsersPaginated(0, 100, "id", true), userMapper::toDto);
+        List<UserDto> users = mapUsersToDto(userService.findAllUsersPaginated(0, 100, "id", true), userMapper::toDto);
         return ResponseEntity.ok(users);
     }
 
@@ -74,7 +75,7 @@ class UserController {
 
         try {
             List<UserDto> users = mapUsersToDto(
-                    userProvider.findAllUsersPaginated(page, size, sortBy, ascending), 
+                    userService.findAllUsersPaginated(page, size, sortBy, ascending), 
                     userMapper::toDto);
             return ResponseEntity.ok(users);
         } catch (IllegalArgumentException e) {
@@ -91,7 +92,7 @@ class UserController {
     @GetMapping("/simple")
     public ResponseEntity<List<UserDto>> getAllUsersSimple() {
         log.debug("REST request to get simplified list of all users");
-        List<UserDto> users = mapUsersToDto(userProvider.findAllUsers(), userMapper::toSimpleDto);
+        List<UserDto> users = mapUsersToDto(userService.findAllUsers(), userMapper::toSimpleDto);
         return ResponseEntity.ok(users);
     }
 
@@ -103,7 +104,7 @@ class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
-        return userProvider.getUser(id)
+        return userService.getUser(id)
                 .map(userMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -118,7 +119,7 @@ class UserController {
     @GetMapping("/email")
     public ResponseEntity<List<UserByEmail>> searchUsersByEmail(@RequestParam String email) {
         log.debug("REST request to search users by email: {}", email);
-        List<UserByEmail> users = mapUsersToDto(userProvider.findUsersByEmail(email), userMapper::toEmail);
+        List<UserByEmail> users = mapUsersToDto(userService.findUsersByEmail(email), userMapper::toEmail);
         return ResponseEntity.ok(users);
     }
 
@@ -131,7 +132,7 @@ class UserController {
     @GetMapping("/older/{time}")
     public ResponseEntity<List<UserDto>> findUsersOlderThan(@PathVariable LocalDate time) {
         log.debug("REST request to find users older than: {}", time);
-        List<UserDto> users = mapUsersToDto(userProvider.findUsersOlderThan(time), userMapper::toDto);
+        List<UserDto> users = mapUsersToDto(userService.findUsersOlderThan(time), userMapper::toDto);
         return ResponseEntity.ok(users);
     }
 
